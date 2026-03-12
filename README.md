@@ -1,29 +1,34 @@
 # PORTFOL.IO
 
-- poc of a portfolio-tracking api
-- the bulk of the IP is in the `prompts` folder
+PoC of a portfolio-tracking api
 
 # SYSTEM DEPENDENCIES
 - node 24 + npm
 
-# OPTIONAL SYSTEM DEPENDENCIES
+# DEV SYSTEM DEPENDENCIES
 - make
 - nvm
 - docker
 - kubernetes
 - helm
+- skaffold
+- k6
 
 # GETTING STARTED
-`make`
+`make init`
+`make run`
 
-# BUILD & RUN
-`npm run build && npm run start` (see the package.json scripts block)
+# LOAD TEST
+- run `make run` in one terminal, and `make load` in another (NB: you will need `k6` installed)
+- (note the 2-3x performance difference in the load test with LOG_LEVEL set to error)
+
+# AI
+- the majority of the code is AI generated, but proof-read
+- the bulk of the intellectual property is in the `prompts/` folder
+- the .md files in `prompts/` are hand-written
 
 # DESIGN DECISIONS
 see [docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md)
-
-# NOTES
-- the .md files in prompts/ are hand-written
 
 # TODO
 - add a Makefile
@@ -37,5 +42,6 @@ see [docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md)
   - snake_case in general
 - observability
 - node file watcher (nodemon)
-- type: module in package.json
+- module in package.json / tsconfig
 - add coverage numbers to jest run
+- tsc debug/release builds, source maps

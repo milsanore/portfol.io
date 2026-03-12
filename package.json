@@ -14,6 +14,8 @@
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
     "test": "jest",
+    "test:integration": "jest --config tests_integration/jest.config.js",
+    "test:load": "k6 run tests_load/hello.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

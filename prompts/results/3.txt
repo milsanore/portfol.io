@@ -1,0 +1,22 @@
+● Wrote 1 memory (ctrl+o to expand)
+
+● Done. Here's what was created:
+
+  Integration Tests (tests_integration/)
+
+  - jest.config.js — separate Jest project targeting tests_integration/**/*.spec.ts, 30s timeout (real network calls need breathing room)
+  - hello.spec.ts — calls real GET /hello, respects BASE_URL env var (defaults to http://localhost:3000)
+
+  Load Tests (tests_load/)
+
+  - hello.js — k6 script: ramps 0→20 VUs in 1s, holds 20 VUs for 29s; checks status 200 and response body; respects BASE_URL env var
+
+  package.json scripts
+
+  npm run test:integration   # run integration tests (app must be up)
+  npm run test:load          # k6 load test (app must be up)
+
+  Typical workflow:
+  docker compose up -d       # start app + postgres
+  npm run test:integration   # or: test:load
+  docker compose down

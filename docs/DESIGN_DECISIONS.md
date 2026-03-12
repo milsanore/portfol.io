@@ -2,10 +2,6 @@
 
 itemising some of the decisions i made as i put this codebase together.
 
-# AI
-- this is the first time I am using Claude in anger
-- day-to-day i use it more conversationally rather than for code gen
-
 # LANGUAGE
 - i've decided to go with typescript
 - alternatively, for some hand-cut async/await/event-loop python with typing (via MyPy) and good performance, please take a look at my github repo https://github.com/milsanore/bi5importer

@@ -3,7 +3,7 @@ import schema from './schema.json';
 
 export function buildApp(): FastifyInstance {
   const fastify = Fastify({
-    logger: process.env.NODE_ENV !== 'test',
+    logger: { level: process.env.LOG_LEVEL ?? 'info' },
   });
 
   fastify.addSchema(schema);

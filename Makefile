@@ -23,9 +23,11 @@ help: Makefile
 .PHONY: init
 init:
 	$(call pp,initializing project)
+	test -e .env || cp .env.example .env
 	git config core.hooksPath hooks
 	rm -rf build && mkdir build
 	npm ci
+	npm run build
 
 ## build: 🔨 compile
 .PHONY: build
@@ -33,7 +35,7 @@ build:
 	$(call pp,NB assuming `make init` has been called)
 	npm run build
 
-## run: 🏃‍♂️ run the app
+## run: 🏃 run the app
 .PHONY: run
 run:
 	npm run start
@@ -44,10 +46,15 @@ test:
 	npm run test
 # TODO: coverage
 
+## integration: 🧪+🧪 run integration tests
+.PHONY: integration
+integration:
+	npm run test:integration
+
 ## load: 🏎️ run load tests
 .PHONY: load
 load:
-#	npm run load
+	npm run test:load
 
 ## tidy: 🧹 tidy things up before committing code
 .PHONY: tidy
@@ -55,9 +62,20 @@ tidy:
 	npm run lint
 	npm run format
 
+
 # CONTAINERISATION RECIPES ----------------------------------------------------
 
-## docker: 🚢 create an app docker image
+## docker: 💿 create an app docker image
 .PHONY: docker
 docker:
 	docker build .
+
+## compose: 🚢 start dependencies
+.PHONY: compose
+compose:
+	docker compose -p portfolio up -d
+
+## compose-stop: 🧊🚢 stop dependencies
+.PHONY: compose-stop
+compose-stop:
+	docker compose -p portfolio stop
