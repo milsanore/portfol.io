@@ -1,0 +1,8 @@
+replicaCount: 1
+
+env:
+  NODE_ENV: development
+  LOG_LEVEL: debug
+  ENABLE_RESPONSE_VALIDATION: "true"
+  # Postgres runs via docker-compose; host.docker.internal reaches the host from k8s pods in Docker Desktop
+  DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:5432/portfolio

@@ -1,0 +1,33 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: portfolio
+
+build:
+  artifacts:
+    - image: portfolio
+      docker:
+        dockerfile: Dockerfile
+  local:
+    push: false
+
+deploy:
+  kubeContext: docker-desktop
+  helm:
+    releases:
+      - name: portfolio
+        chartPath: deployment/helm
+        valuesFiles:
+          - deployment/k8s/values.sbx.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_portfolio}}"
+          image.tag: "{{.IMAGE_TAG_portfolio}}"
+        setValues:
+          image.pullPolicy: IfNotPresent
+
+portForward:
+  - resourceType: service
+    resourceName: portfolio
+    namespace: default
+    port: 3000
+    localPort: 3000

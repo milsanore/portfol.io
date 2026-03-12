@@ -1,0 +1,41 @@
+● Wrote 1 memory (ctrl+o to expand)
+
+● All done. Here's a summary of what was created:
+
+  ---
+  Files Created
+
+  Docker
+
+  - Dockerfile — Two-stage build: node:24-alpine builder compiles TypeScript, lean runtime stage copies only build/ + prod deps, runs as non-root node user
+  - .dockerignore — Excludes node_modules/, build/, .env, logs
+
+  Docker Compose
+
+  - docker-compose.yml — app + postgres:latest with a healthcheck; app only starts once postgres is healthy
+
+  Kubernetes / Helm
+
+  deployment/
+    helm/
+      Chart.yaml
+      values.yaml
+      templates/
+        _helpers.tpl
+        deployment.yaml      ← liveness/readiness probes on /hello
+        service.yaml
+        configmap.yaml       ← all env vars via ConfigMap
+    k8s/
+      values.sbx.yaml        ← 1 replica, debug logging, host.docker.internal DB
+      values.int.yaml        ← 2 replicas, resource limits
+      values.prod.yaml       ← 3 replicas, larger resource limits
+  - skaffold.yaml — Skaffold v4beta11, targets docker-desktop context, port-forwards 3000→3000, watches for file changes and redeploys
+
+  Local k8s Dev Workflow
+
+  # 1. Start postgres via docker-compose
+  docker compose up postgres
+
+  # 2. Deploy app to Docker Desktop k8s (with file watching)
+  skaffold dev
+  The app in k8s connects to postgres via host.docker.internal:5432, which resolves to the host from within Docker Desktop pods.

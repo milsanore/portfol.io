@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: portfolio
+  pullPolicy: IfNotPresent
+  tag: ""
+
+service:
+  type: ClusterIP
+  port: 3000
+
+env:
+  NODE_ENV: development
+  PORT: "3000"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: info
+  ENABLE_RESPONSE_VALIDATION: "false"
+  DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:5432/portfolio
+
+resources: {}

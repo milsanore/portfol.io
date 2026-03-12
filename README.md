@@ -1,7 +1,20 @@
 # PORTFOL.IO
 
 - poc of a portfolio-tracking api
-- the ip is in the `prompts` folder
+- the bulk of the IP is in the `prompts` folder
+
+# SYSTEM DEPENDENCIES
+- node 24 + npm
+
+# OPTIONAL SYSTEM DEPENDENCIES
+- make
+- nvm
+- docker
+- kubernetes
+- helm
+
+# GETTING STARTED
+`make`
 
 # BUILD & RUN
 `npm run build && npm run start` (see the package.json scripts block)
@@ -25,3 +38,4 @@ see [docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md)
 - observability
 - node file watcher (nodemon)
 - type: module in package.json
+- add coverage numbers to jest run
