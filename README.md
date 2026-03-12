@@ -1,5 +1,4 @@
 # PORTFOL.IO
-
 PoC of a portfolio-tracking api
 
 # SYSTEM DEPENDENCIES
@@ -15,12 +14,12 @@ PoC of a portfolio-tracking api
 - k6
 
 # GETTING STARTED
-`make init`
-`make run`
+- `make init`
+- `make run`
 
 # LOAD TEST
 - run `make run` in one terminal, and `make load` in another (NB: you will need `k6` installed)
-- (note the 2-3x performance difference in the load test with LOG_LEVEL set to error)
+- (note the 2-3x performance difference in the load test if LOG_LEVEL is set to error)
 
 # AI
 - the majority of the code is AI generated, but proof-read

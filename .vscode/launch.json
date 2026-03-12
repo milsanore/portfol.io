@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug App",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ts-node",
+      "args": ["${workspaceFolder}/src/main.ts"],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true
+    },
+    {
+      "name": "Debug Integration Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["--config", "tests_integration/jest.config.js", "--runInBand"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true
+    },
+    {
+      "name": "Debug Unit Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["--runInBand", "--coverage"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true
+    }
+  ]
+}

@@ -6,10 +6,3 @@ env:
   ENABLE_RESPONSE_VALIDATION: "true"
   DATABASE_URL: postgresql://postgres:postgres@postgres-int.example.internal:5432/portfolio
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 500m
-    memory: 256Mi

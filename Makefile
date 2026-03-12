@@ -43,8 +43,7 @@ run:
 ## test: 🧪 run unit tests
 .PHONY: test
 test:
-	npm run test
-# TODO: coverage
+	npm run test -- --coverage
 
 ## integration: 🧪+🧪 run integration tests
 .PHONY: integration
@@ -59,8 +58,8 @@ load:
 ## tidy: 🧹 tidy things up before committing code
 .PHONY: tidy
 tidy:
-	npm run lint
 	npm run format
+	npm run lint
 
 
 # CONTAINERISATION RECIPES ----------------------------------------------------
@@ -68,14 +67,24 @@ tidy:
 ## docker: 💿 create an app docker image
 .PHONY: docker
 docker:
-	docker build .
+	docker build . -t portfolio:latest
 
-## compose: 🚢 start dependencies
+## compose: 🚢 start compose
 .PHONY: compose
 compose:
 	docker compose -p portfolio up -d
 
-## compose-stop: 🧊🚢 stop dependencies
+## compose-deps: 🚢 start compose (dependencies only)
+.PHONY: compose-deps
+compose-deps:
+	docker compose -p portfolio up -d postgres
+
+## compose-stop: 🧊🚢 stop compose
 .PHONY: compose-stop
 compose-stop:
 	docker compose -p portfolio stop
+
+## skaffold: 🎁🏃 run the app in k8s (with a filewatcher)
+.PHONY: skaffold
+skaffold:
+	skaffold dev

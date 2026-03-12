@@ -8,6 +8,9 @@ export const options = {
     { duration: '1s', target: 20 },
     { duration: '29s', target: 20 },
   ],
+  thresholds: {
+    checks: ['rate==1.0'],
+  },
 };
 
 export default function () {

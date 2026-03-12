@@ -9,6 +9,23 @@ services:
       NODE_ENV: production
       PORT: "3000"
       HOST: "0.0.0.0"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 150M
+        reservations:
+          cpus: "1.5"
+          memory: 150M
+    healthcheck:
+      test: [
+        "CMD", "node", "-e", 
+        "require('http').get('http://localhost:3000/hello', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+      ]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
     depends_on:
       postgres:
         condition: service_healthy

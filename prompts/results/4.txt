@@ -1,0 +1,29 @@
+
+● Wrote 1 memory (ctrl+o to expand)
+
+● Done. Here's a summary of everything created:
+
+  GitHub Actions (.github/workflows/)
+
+  - _ci.yml — reusable workflow: format check → lint → unit tests + coverage → docker compose up → integration tests → k6 in Docker (--cpus=1.5 --memory=150m --network host) → docker compose down
+  - feature.yml — triggers on push to any non-master branch, calls _ci.yml
+  - pr.yml — triggers on PRs to master, calls _ci.yml + wagoid/commitlint-action@v6 for conventional commits validation
+  - commitlint.config.js — extends @commitlint/config-conventional
+
+  A note on the deployment/github/ preference: GitHub hard-requires .github/workflows/ as the source directory, so it wasn't possible to honour that.
+
+  tests_load/hello.js
+
+  Added thresholds: { checks: ['rate==1.0'] } so k6 exits non-zero (and fails the build) if any check fails.
+
+  VS Code (.vscode/)
+
+  - launch.json — three targets: Run App, Debug App (ts-node with source maps), Run Unit Tests (jest with coverage)
+  - settings.json — prettier on save, eslint fix on save, Coverage Gutters pointed at coverage/lcov.info
+  - jest.config.js — added lcov to coverageReporters so Coverage Gutters has a file to read
+
+  readme_generated.md
+
+  Covers system dependencies, all three ways to run the app (native, Docker Compose, k8s/Skaffold), and all three test suites.
+
+✻ Cooked for 3m 10s

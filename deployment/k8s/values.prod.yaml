@@ -5,11 +5,3 @@ env:
   LOG_LEVEL: warn
   ENABLE_RESPONSE_VALIDATION: "true"
   DATABASE_URL: postgresql://postgres:postgres@postgres-prod.example.internal:5432/portfolio
-
-resources:
-  requests:
-    cpu: 250m
-    memory: 256Mi
-  limits:
-    cpu: 1000m
-    memory: 512Mi

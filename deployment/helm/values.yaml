@@ -17,4 +17,10 @@ env:
   ENABLE_RESPONSE_VALIDATION: "false"
   DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:5432/portfolio
 
-resources: {}
+resources:
+  requests:
+    cpu: 1500m
+    memory: 150Mi
+  limits:
+    cpu: 1500m
+    memory: 150Mi
