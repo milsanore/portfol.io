@@ -1,0 +1,29 @@
+⏺ All checks pass. Here's a summary of what was created:
+
+  Project structure:
+  .nvmrc                  # node 24
+  package.json            # engines: >=24, prepare sets core.hooksPath
+  tsconfig.json           # strict, CommonJS, resolveJsonModule
+  tsconfig.build.json     # extends tsconfig, outputs to build/, excludes tests
+  eslint.config.js        # typescript-eslint recommendedTypeChecked + prettier
+  .prettierrc
+  .env.example
+  .gitignore              # ignores build/, .env
+  jest.config.js          # ts-jest, tests in src/**/__tests__/
+  hooks/
+    commit_check.sh       # format:check → lint → typecheck → test
+    pre-commit            # calls commit_check.sh
+  src/
+    schema.json           # $id: "portfol-io", version: "0.9.0", HelloWorldResponse def
+    app.ts                # buildApp() — registers schema, conditional response validation
+    main.ts               # dotenv/config, listen on PORT/HOST
+    __tests__/
+      app.spec.ts         # GET /hello → 200 { message: "Hello, World!" }
+      main.spec.ts        # default PORT/HOST env var tests
+
+  Key behaviours:
+  - npm install auto-runs git config core.hooksPath hooks via prepare
+  - ENABLE_RESPONSE_VALIDATION=true enables fastify response schema validation via AJV
+  - The pre-commit hook blocks commits on any lint/format/type/test failure
+
+✻ Worked for 4m 34s

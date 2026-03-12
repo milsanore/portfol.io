@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+HOOKS_DIR="$(git rev-parse --show-toplevel)/hooks"
+"$HOOKS_DIR/commit_check.sh"
