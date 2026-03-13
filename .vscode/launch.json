@@ -15,6 +15,20 @@
       "sourceMaps": true
     },
     {
+      "name": "Debug Import Tick Data",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ts-node",
+      "args": ["${workspaceFolder}/deployment/postgres/scripts/import-tick-data.ts"],
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.scripts.json"
+      },
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true
+    },
+    {
       "name": "Debug Integration Tests",
       "type": "node",
       "request": "launch",

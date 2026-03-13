@@ -1,0 +1,22 @@
+● Done. Run npm install to pick up the new packages. Here's a summary of what was created:
+
+  ---
+  deployment/postgres/migrations/1_create_tick_data.sql
+  - tick_data (id UUID, data JSONB) — id uses gen_random_uuid() (no extension needed on PG 13+)
+  - Composite B-tree index (uniqueSymbol, pricingDate) — uniqueSymbol first because it has much higher cardinality, so a ticker lookup eliminates the vast majority of rows before scanning dates. A date-only
+  range scan would need a separate index if that query pattern appears.
+
+  deployment/postgres/migrations/2_create_trades.sql
+  - trades (id UUID, data JSONB)
+  - Unique partial index on (userId, exchange, tradeId) extracted from JSONB — records missing any of these keys aren't covered, which is intentional (they'd be rejected at the application layer).
+
+  deployment/postgres/scripts/import-tick-data.ts
+  - Streams the zip via unzipper.Open.file() → pipes through csv-parse → never loads more than BATCH_SIZE (1000) rows into memory at once
+  - Column names converted from UPPER_SNAKE_CASE to camelCase; createdAt/updatedAt injected per row
+
+  tsconfig.scripts.json — separate tsconfig for ts-node to compile files outside src/
+
+  package.json — new scripts: migrate:up, migrate:down, migrate:create, import:tick-data; new deps: pg, node-pg-migrate (regular), csv-parse, unzipper, @types/pg, @types/unzipper (dev)
+
+  .env.example — DATABASE_URL documented
+  

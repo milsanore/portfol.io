@@ -3,3 +3,4 @@ build/
 coverage/
 .env
 *.log
+deployment/postgres/scripts/sample-tick-data.csv.zip

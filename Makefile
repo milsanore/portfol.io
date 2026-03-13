@@ -28,6 +28,7 @@ init:
 	rm -rf build && mkdir build
 	npm ci
 	npm run build
+	npm run migrate:up
 
 ## build: 🔨 compile
 .PHONY: build
