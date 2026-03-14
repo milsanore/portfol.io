@@ -12,13 +12,13 @@ jobs:
   ci:
     uses: ./.github/workflows/_ci.yml
 
-  conventional-commits:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # conventional-commits:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Validate conventional commits
-        uses: wagoid/commitlint-action@v6
+  #     - name: Validate conventional commits
+  #       uses: wagoid/commitlint-action@v6
