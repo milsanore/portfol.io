@@ -66,6 +66,7 @@ jobs:
         run: |
           docker compose -p portfolio up -d --wait
           npm run migrate:up
+          npm run import:tick-data
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio
 
@@ -79,7 +80,8 @@ jobs:
             --cpus="1.5" \
             --memory="150m" \
             -v "${{ github.workspace }}/tests_load:/tests" \
-            grafana/k6 run /tests/hello.js
+            --entrypoint sh \
+            grafana/k6 /tests/run.sh
 
       - name: Stop services
         if: always()

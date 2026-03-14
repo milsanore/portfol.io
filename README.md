@@ -144,8 +144,9 @@ BASE_URL=http://my-env:3000 make load
 - load tests (using k6)
 - [statically defined API schema](src/schemas.json)
 - [Makefile as a task runner](Makefile)
-- working github actions that run integration and load tests inline in 2 minutes (using docker-in-docker)
-- cached postgres image and node_modules in the github pipeline
+- [github actions](https://github.com/milsanore/portfol.io/actions)
+  - run integration and load tests within the pipeline in 3 minutes (using docker-in-docker)
+  - cached postgres image and node_modules in the github pipeline
 - [out-of-the-box debugging](.vscode/launch.json)
 - [memory-efficient script for importing sample tick data](deployment/postgres/scripts/import-tick-data.ts)
 - k8s deployment (via helm chart), with file-watch redeployment (`make skaffold`)
