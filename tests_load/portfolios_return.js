@@ -21,10 +21,16 @@ export function setup() {
   );
   const portfolioId = portfolioRes.json('id');
 
-  for (let i = 0; i < 5; i++) {
+  const symbols = ['ASX:CBA', 'ASX:ANZ', 'ASX:NAB', 'ASX:WBC', 'ASX:BHP'];
+  for (const unique_symbol of symbols) {
     http.post(
       `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-      JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', amount: i + 1, price: 100.5, currency: 'AUD' }),
+      JSON.stringify({ unique_symbol, side: 'buy', amount: 100, price: 50, currency: 'AUD' }),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    http.post(
+      `${BASE_URL}/portfolios/${portfolioId}/transactions`,
+      JSON.stringify({ unique_symbol, side: 'sell', amount: 20, price: 55, currency: 'AUD' }),
       { headers: { 'Content-Type': 'application/json' } },
     );
   }
@@ -33,9 +39,11 @@ export function setup() {
 }
 
 export default function (data) {
-  const res = http.get(`${BASE_URL}/portfolios/${data.portfolioId}/transactions`);
+  const res = http.get(`${BASE_URL}/portfolios/${data.portfolioId}/return`);
   check(res, {
-    'list: status is 200': (r) => r.status === 200,
-    'list: has data': (r) => Array.isArray(r.json('data')),
+    'return: status is 200': (r) => r.status === 200,
+    'return: algorithm is SVE': (r) => r.json('algorithm') === 'SVE',
+    'return: start_value is positive': (r) => r.json('start_value') > 0,
+    'return: has return_pct': (r) => typeof r.json('return_pct') === 'number',
   });
 }

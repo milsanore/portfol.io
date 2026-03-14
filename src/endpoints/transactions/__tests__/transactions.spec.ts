@@ -12,7 +12,7 @@ const transactionId = '223e4567-e89b-12d3-a456-426614174002';
 
 const transactionData = {
   portfolio_id: portfolioId,
-  ticker: 'CBA.ASX',
+  unique_symbol: 'ASX:CBA',
   side: 'buy',
   amount: 10,
   price: 100.5,
@@ -117,7 +117,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
       method: 'POST',
       url: `/portfolios/${portfolioId}/transactions`,
       payload: {
-        ticker: 'CBA.ASX',
+        unique_symbol: 'ASX:CBA',
         side: 'buy',
         amount: 10,
         price: 100.5,
@@ -133,7 +133,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     const response = await app.inject({
       method: 'POST',
       url: `/portfolios/${portfolioId}/transactions`,
-      payload: { ticker: 'CBA.ASX' },
+      payload: { unique_symbol: 'ASX:CBA' },
     });
 
     expect(response.statusCode).toBe(400);
@@ -143,7 +143,13 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     const response = await app.inject({
       method: 'POST',
       url: `/portfolios/${portfolioId}/transactions`,
-      payload: { ticker: 'CBA.ASX', side: 'hold', amount: 10, price: 100.5, currency: 'AUD' },
+      payload: {
+        unique_symbol: 'ASX:CBA',
+        side: 'hold',
+        amount: 10,
+        price: 100.5,
+        currency: 'AUD',
+      },
     });
 
     expect(response.statusCode).toBe(400);
@@ -200,18 +206,22 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
   it('returns 200 with updated transaction', async () => {
     const updatedRow = {
       id: transactionId,
-      data: { ...transactionData, ticker: 'ANZ.ASX', updated_at: '2024-02-01T00:00:00.000Z' },
+      data: {
+        ...transactionData,
+        unique_symbol: 'ASX:ANZ',
+        updated_at: '2024-02-01T00:00:00.000Z',
+      },
     };
     mockQuery.mockResolvedValueOnce({ rows: [updatedRow] });
 
     const response = await app.inject({
       method: 'PATCH',
       url: `/portfolios/${portfolioId}/transactions/${transactionId}`,
-      payload: { ticker: 'ANZ.ASX' },
+      payload: { unique_symbol: 'ASX:ANZ' },
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({ ticker: 'ANZ.ASX' });
+    expect(response.json()).toMatchObject({ unique_symbol: 'ASX:ANZ' });
   });
 
   it('returns 404 when transaction not found', async () => {
@@ -220,7 +230,7 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
     const response = await app.inject({
       method: 'PATCH',
       url: `/portfolios/${portfolioId}/transactions/${transactionId}`,
-      payload: { ticker: 'ANZ.ASX' },
+      payload: { unique_symbol: 'ASX:ANZ' },
     });
 
     expect(response.statusCode).toBe(404);

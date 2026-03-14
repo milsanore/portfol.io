@@ -19,7 +19,7 @@ async function createTransaction(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      ticker: 'CBA.ASX',
+      unique_symbol: 'ASX:CBA',
       side: 'buy',
       amount: 10,
       price: 100.5,
@@ -43,7 +43,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     expect(status).toBe(201);
     expect(body).toMatchObject({
       portfolio_id: portfolioId,
-      ticker: 'CBA.ASX',
+      unique_symbol: 'ASX:CBA',
       side: 'buy',
       amount: 10,
       price: 100.5,
@@ -73,7 +73,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     const response = await fetch(`${BASE_URL}/portfolios/${portfolioId}/transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ticker: 'CBA.ASX' }),
+      body: JSON.stringify({ unique_symbol: 'ASX:CBA' }),
     });
 
     expect(response.status).toBe(400);
@@ -83,7 +83,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     const response = await fetch(`${BASE_URL}/portfolios/${portfolioId}/transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ticker: 'CBA.ASX', side: 'hold', amount: 10, price: 100.5, currency: 'AUD' }),
+      body: JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'hold', amount: 10, price: 100.5, currency: 'AUD' }),
     });
 
     expect(response.status).toBe(400);
@@ -109,7 +109,7 @@ describe('GET /portfolios/:portfolio_id/transactions/:id', () => {
     expect(await response.json()).toMatchObject({
       id: transactionId,
       portfolio_id: portfolioId,
-      ticker: 'CBA.ASX',
+      unique_symbol: 'ASX:CBA',
     });
   });
 
@@ -139,13 +139,13 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticker: 'ANZ.ASX', amount: 20 }),
+        body: JSON.stringify({ unique_symbol: 'ASX:ANZ', amount: 20 }),
       },
     );
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body).toMatchObject({ id: transactionId, ticker: 'ANZ.ASX', amount: 20 });
+    expect(body).toMatchObject({ id: transactionId, unique_symbol: 'ASX:ANZ', amount: 20 });
     expect(body.updated_at).toBeDefined();
   });
 
@@ -161,7 +161,7 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.ticker).toBe('ANZ.ASX');
+    expect(body.unique_symbol).toBe('ASX:ANZ');
     expect(body.currency).toBe('USD');
   });
 
@@ -171,7 +171,7 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticker: 'NAB.ASX' }),
+        body: JSON.stringify({ unique_symbol: 'ASX:NAB' }),
       },
     );
 
@@ -191,10 +191,10 @@ describe('GET /portfolios/:portfolio_id/transactions', () => {
     ]);
 
     await Promise.all([
-      createTransaction(portfolioId, { ticker: 'CBA.ASX', date: '2024-03-01T00:00:00.000Z' }),
-      createTransaction(portfolioId, { ticker: 'ANZ.ASX', date: '2024-06-01T00:00:00.000Z' }),
-      createTransaction(portfolioId, { ticker: 'NAB.ASX', date: '2024-09-01T00:00:00.000Z' }),
-      createTransaction(otherPortfolioId, { ticker: 'WBC.ASX' }),
+      createTransaction(portfolioId, { unique_symbol: 'ASX:CBA', date: '2024-03-01T00:00:00.000Z' }),
+      createTransaction(portfolioId, { unique_symbol: 'ASX:ANZ', date: '2024-06-01T00:00:00.000Z' }),
+      createTransaction(portfolioId, { unique_symbol: 'ASX:NAB', date: '2024-09-01T00:00:00.000Z' }),
+      createTransaction(otherPortfolioId, { unique_symbol: 'ASX:WBC' }),
     ]);
   });
 
@@ -236,7 +236,7 @@ describe('GET /portfolios/:portfolio_id/transactions', () => {
 
     const body = await response.json();
     expect(body.total).toBe(2);
-    expect(body.data.map((t: { ticker: string }) => t.ticker).sort()).toEqual(['ANZ.ASX', 'NAB.ASX']);
+    expect(body.data.map((t: { unique_symbol: string }) => t.unique_symbol).sort()).toEqual(['ASX:ANZ', 'ASX:NAB']);
   });
 
   it('filters by date_to', async () => {
@@ -246,7 +246,7 @@ describe('GET /portfolios/:portfolio_id/transactions', () => {
 
     const body = await response.json();
     expect(body.total).toBe(1);
-    expect(body.data[0].ticker).toBe('CBA.ASX');
+    expect(body.data[0].unique_symbol).toBe('ASX:CBA');
   });
 
   it('filters by date range', async () => {
@@ -256,7 +256,7 @@ describe('GET /portfolios/:portfolio_id/transactions', () => {
 
     const body = await response.json();
     expect(body.total).toBe(1);
-    expect(body.data[0].ticker).toBe('ANZ.ASX');
+    expect(body.data[0].unique_symbol).toBe('ASX:ANZ');
   });
 
   it('returns an empty list for a portfolio with no transactions', async () => {

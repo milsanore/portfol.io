@@ -1,28 +1,13 @@
-# INTRO
-```
-Quant Engineering Manager
-The challenge
-● Design an API that allows you to manage portfolios and transactions within a portfolio.
-● Provide a function that calculates portfolio return for a given period of time.
-What do we provide?
-We provide a dataset with ASX ticker prices for a period of time.
-What do we expect?
-● Describe what the API looks like.
-● Provide as much detail as possible for future scalability and shortcuts that you have taken
-● Provide a function that calculates the portfolio return given a period of time
-Some definitions
-● A transaction consists of the following fields (for simplification): transaction type
-(buy/sell), ticker, date, amount, price and currency
-● We recommend using Python or Typescript for the implementation.
-Other considerations
-● The challenge shouldn’t take you more than 2h
-● Please describe any shortcuts or future possible implementations
-● You can use AI, we’d like to hear how you use it.
-```
-
-
-# CALCULATING PORTFOLIO RETURNS
-- keep in mind that we have a close-price time series in the database, in the `tick_data` table.
+# PORTFOLIO RETURN ALGORITHM
+- you are welcome to review literature
+- i would suggest to calculate portfolio return as the percentage change in portfolio value: (portfolio-value(end) - portfolio-value(start)) / portfolio-value(start)
+- keep in mind that we have a close-price time series in the database, in the `tick_data` table
+- the 'end' value of a stock is the most recent close price available, which may not be the current date
+- if no tick data exists after a stock was purchased, assume spot price = average purchase price. i.e. return zero profit for that stock
+- suggestions:
+  - start value: sum of all positions (number of shares x purchase price)
+  - end value: sum of all positions (number of shares x latest close price from tick_data)
+  - return: a single percentage representing the portfolio return
 
 
 # ENDPOINTS
@@ -31,17 +16,25 @@ Other considerations
 - endpoints are RESTful
 - static schema definitions
 - rely on composition over inheritance, so interfaces/types over classes
-- snake_case in JSON (idiomatic)
+- snake_case property names in JSON API responses (idiomatic?)
 
 
-# ENDPOINT
-- `GET api/portfolios/{uuid}/return`
+## GET-PORTFOLIO-RETURN
+- `GET portfolios/{portfolio-uuid}/return`
 - inputs are start date and end date
-- end date is optional, can default to 'now'
-- the aim is to get the totality
-- memory considerations -> iteration/generator
+- end date is optional - default to 'now'
+- since it seems like a few methods exist to calculate portfolio return, the selected mechanism should be made explicit through an optional (i.e. defaultable) parameter (e.g. `&algorithm=SVE` - i.e. start-vs-end)
+- memory considerations -> db-pagination/iteration/generator
+- the DB tick_data table should already be indexed, but check
 
 
 
-# THOUGHTS
-- if we don't have tick data, return a zero return (i.e. spot price == trade price)
+
+- start_value = total buy cost basis: sum(buy_amount × buy_price)
+- end_value = realized cash from sells + unrealized value of remaining shares:
+  - realized: sum(sell_amount × sell_price)
+  - unrealized: net_shares × latest_close_price (where net_shares = total_bought - total_sold per ticker)
+- return = (end_value - start_value) / start_value
+
+Example: buy 100 @ $10 ($1000 in), sell 50 @ $15 ($750 cash out), remaining 50 @ $20 ($1000 unrealized) → end_value = $1750, return
+  = 75%.

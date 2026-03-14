@@ -1,4 +1,5 @@
 export interface Portfolio {
+  id: string;
   customer_id: string;
   name: string;
   currency: string;
@@ -11,6 +12,6 @@ export interface PortfolioRow {
   data: Portfolio;
 }
 
-export function rowToResponse(row: PortfolioRow): Portfolio & { id: string } {
-  return { id: row.id, ...row.data };
+export function rowToResponse(row: PortfolioRow): Portfolio {
+  return { ...row.data, id: row.id };
 }

@@ -7,7 +7,7 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
   fastify.post<{
     Params: { portfolio_id: string };
     Body: {
-      ticker: string;
+      unique_symbol: string;
       side: 'buy' | 'sell';
       amount: number;
       price: number;
@@ -20,25 +20,22 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
     '/portfolios/:portfolio_id/transactions',
     {
       schema: {
-        params: {
-          type: 'object',
-          properties: { portfolio_id: { type: 'string', format: 'uuid' } },
-          required: ['portfolio_id'],
-        },
+        params: { $ref: 'TransactionCollectionParams' },
         body: { $ref: 'CreateTransactionRequest' },
         response: { 201: { $ref: 'Transaction' } },
       },
     },
     async (request, reply) => {
       const { portfolio_id } = request.params;
-      const { ticker, side, amount, price, currency, exchange, transaction_id, date } =
+      const { unique_symbol, side, amount, price, currency, exchange, transaction_id, date } =
         request.body;
       const id = randomUUID();
       const now = new Date().toISOString();
 
       const data: Record<string, unknown> = {
+        id,
         portfolio_id,
-        ticker,
+        unique_symbol,
         side,
         amount,
         price,
@@ -52,8 +49,8 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
 
       const result = await pool.query<TransactionRow>({
         name: 'create-transaction',
-        text: `INSERT INTO transactions (id, data) VALUES ($1, $2) RETURNING id, data`,
-        values: [id, JSON.stringify(data)],
+        text: `INSERT INTO transactions (id, portfolio_id, data) VALUES ($1, $2, $3) RETURNING id, data`,
+        values: [id, portfolio_id, JSON.stringify(data)],
       });
 
       reply.code(201);

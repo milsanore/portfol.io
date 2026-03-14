@@ -158,6 +158,152 @@ describe('GET /portfolios/:id', () => {
   });
 });
 
+describe('GET /portfolios/:id/return', () => {
+  const app = buildApp();
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  beforeEach(() => {
+    mockQuery.mockReset();
+  });
+
+  const portfolioExistsRow = { rows: [{ id: portfolioId }] };
+  const noTransactions = { rows: [] };
+  const noClosePrices = { rows: [] };
+
+  it('returns 404 when portfolio not found', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01`,
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toEqual({ error: 'Portfolio not found' });
+  });
+
+  it('returns 200 with zero return when no transactions exist', async () => {
+    mockQuery.mockResolvedValueOnce(portfolioExistsRow).mockResolvedValueOnce(noTransactions);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      portfolio_id: portfolioId,
+      algorithm: 'SVE',
+      start_value: 0,
+      end_value: 0,
+      return_pct: 0,
+    });
+  });
+
+  it('returns 0% when no tick data exists (falls back to purchase price)', async () => {
+    // 10 shares of ASX:CBA @ 100 each
+    const txRow = {
+      unique_symbol: 'ASX:CBA',
+      side: 'buy',
+      amount: '10',
+      price: '100',
+      currency: 'USD',
+    };
+    mockQuery
+      .mockResolvedValueOnce(portfolioExistsRow)
+      .mockResolvedValueOnce({ rows: [txRow] }) // first page (< PAGE_SIZE → done)
+      .mockResolvedValueOnce(noClosePrices); // no tick data → fallback
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json();
+    expect(body.start_value).toBeCloseTo(1000);
+    expect(body.end_value).toBeCloseTo(1000); // fallback: net_shares × avg_buy_price
+    expect(body.return_pct).toBeCloseTo(0);
+  });
+
+  it('computes correct return for buy-only position with tick data', async () => {
+    // Buy 10 @ 100, current price 120 → return = 20%
+    const txRow = {
+      unique_symbol: 'ASX:CBA',
+      side: 'buy',
+      amount: '10',
+      price: '100',
+      currency: 'USD',
+    };
+    const priceRow = { unique_symbol: 'ASX:CBA', close_price: '120' };
+    mockQuery
+      .mockResolvedValueOnce(portfolioExistsRow)
+      .mockResolvedValueOnce({ rows: [txRow] })
+      .mockResolvedValueOnce({ rows: [priceRow] });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json();
+    expect(body.start_value).toBeCloseTo(1000);
+    expect(body.end_value).toBeCloseTo(1200);
+    expect(body.return_pct).toBeCloseTo(20);
+  });
+
+  it('accounts for realized PnL from sells', async () => {
+    // Buy 100 @ 10 (cost = 1000), sell 50 @ 15 (proceeds = 750), remaining 50 @ 20 (= 1000)
+    // end_value = 750 + 1000 = 1750, return = 75%
+    const buyRow = {
+      unique_symbol: 'ASX:CBA',
+      side: 'buy',
+      amount: '100',
+      price: '10',
+      currency: 'USD',
+    };
+    const sellRow = {
+      unique_symbol: 'ASX:CBA',
+      side: 'sell',
+      amount: '50',
+      price: '15',
+      currency: 'USD',
+    };
+    const priceRow = { unique_symbol: 'ASX:CBA', close_price: '20' };
+    mockQuery
+      .mockResolvedValueOnce(portfolioExistsRow)
+      .mockResolvedValueOnce({ rows: [buyRow, sellRow] })
+      .mockResolvedValueOnce({ rows: [priceRow] });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json();
+    expect(body.start_value).toBeCloseTo(1000);
+    expect(body.end_value).toBeCloseTo(1750);
+    expect(body.return_pct).toBeCloseTo(75);
+  });
+
+  it('defaults algorithm to SVE', async () => {
+    mockQuery.mockResolvedValueOnce(portfolioExistsRow).mockResolvedValueOnce(noTransactions);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({ algorithm: 'SVE' });
+  });
+});
+
 describe('PATCH /portfolios/:id', () => {
   const app = buildApp();
 

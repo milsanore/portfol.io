@@ -127,15 +127,19 @@ BASE_URL=http://my-env:3000 make load
 
 ### Other
 - not using a base-10 number type (e.g. decimal.js) yet, because it doesn't appear warranted. this may change
+- calcs are based in USD - forex is hard-coded
+- non-unique data in the sample tick data provided - averaging across all rows as a workaround
 
 ## TODO - FUNCTIONAL
-- `customers` collection, etc
-- `DELETE` endpoints
+- does not support shorting stocks
+- missing `customers` collection
+- missing `DELETE` endpoints (does regulation stipulate soft-delete?)
 - unique key on the transactions table
   - perhaps a composite unique key on portfolio_id + trade_id, but needs careful checking for cross-exchange compatibility
-- Strict validation (AJV) — validates the response object against the schema before serializing, and throws a 500 if it doesn't
+- uncertain data size, even more pagination may be required in production
 
 ## TODO - TECHNICAL
+- Strict validation (AJV) — validates the response object against the schema before serializing, and throws a 500 if it doesn't
 - is a dependency injection framework necessary?
 - configure sonarcloud
 - configure the conventional commit regex in the github project

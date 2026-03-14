@@ -69,7 +69,7 @@
     "properties": {
       "id": { "type": "string", "format": "uuid" },
       "portfolio_id": { "type": "string", "format": "uuid" },
-      "ticker": { "type": "string" },
+      "unique_symbol": { "type": "string" },
       "side": { "type": "string", "enum": ["buy", "sell"] },
       "amount": { "type": "number" },
       "price": { "type": "number" },
@@ -83,7 +83,7 @@
     "required": [
       "id",
       "portfolio_id",
-      "ticker",
+      "unique_symbol",
       "side",
       "amount",
       "price",
@@ -119,7 +119,7 @@
     "$id": "CreateTransactionRequest",
     "type": "object",
     "properties": {
-      "ticker": { "type": "string", "minLength": 1 },
+      "unique_symbol": { "type": "string", "minLength": 1 },
       "side": { "type": "string", "enum": ["buy", "sell"] },
       "amount": { "type": "number", "exclusiveMinimum": 0 },
       "price": { "type": "number", "exclusiveMinimum": 0 },
@@ -128,14 +128,14 @@
       "transaction_id": { "type": "string" },
       "date": { "type": "string", "format": "date-time" }
     },
-    "required": ["ticker", "side", "amount", "price", "currency"],
+    "required": ["unique_symbol", "side", "amount", "price", "currency"],
     "additionalProperties": false
   },
   {
     "$id": "UpdateTransactionRequest",
     "type": "object",
     "properties": {
-      "ticker": { "type": "string", "minLength": 1 },
+      "unique_symbol": { "type": "string", "minLength": 1 },
       "side": { "type": "string", "enum": ["buy", "sell"] },
       "amount": { "type": "number", "exclusiveMinimum": 0 },
       "price": { "type": "number", "exclusiveMinimum": 0 },
@@ -145,6 +145,31 @@
       "date": { "type": "string", "format": "date-time" }
     },
     "additionalProperties": false
+  },
+  {
+    "$id": "PortfolioParams",
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "format": "uuid" }
+    },
+    "required": ["id"]
+  },
+  {
+    "$id": "TransactionCollectionParams",
+    "type": "object",
+    "properties": {
+      "portfolio_id": { "type": "string", "format": "uuid" }
+    },
+    "required": ["portfolio_id"]
+  },
+  {
+    "$id": "TransactionParams",
+    "type": "object",
+    "properties": {
+      "portfolio_id": { "type": "string", "format": "uuid" },
+      "id": { "type": "string", "format": "uuid" }
+    },
+    "required": ["portfolio_id", "id"]
   },
   {
     "$id": "ErrorResponse",
@@ -153,6 +178,38 @@
       "error": { "type": "string" }
     },
     "required": ["error"],
+    "additionalProperties": false
+  },
+  {
+    "$id": "PortfolioReturnQuerystring",
+    "type": "object",
+    "properties": {
+      "start_date": { "type": "string", "format": "date" },
+      "end_date": { "type": "string", "format": "date" },
+      "algorithm": { "type": "string", "enum": ["SVE"], "default": "SVE" }
+    }
+  },
+  {
+    "$id": "PortfolioReturn",
+    "type": "object",
+    "properties": {
+      "portfolio_id": { "type": "string", "format": "uuid" },
+      "algorithm": { "type": "string" },
+      "start_date": { "type": ["string", "null"] },
+      "end_date": { "type": "string" },
+      "start_value": { "type": "number" },
+      "end_value": { "type": "number" },
+      "return_pct": { "type": "number" }
+    },
+    "required": [
+      "portfolio_id",
+      "algorithm",
+      "start_date",
+      "end_date",
+      "start_value",
+      "end_value",
+      "return_pct"
+    ],
     "additionalProperties": false
   }
 ]

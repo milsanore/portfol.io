@@ -15,11 +15,7 @@ export const listTransactions: FastifyPluginCallback = (fastify) => {
     '/portfolios/:portfolio_id/transactions',
     {
       schema: {
-        params: {
-          type: 'object',
-          properties: { portfolio_id: { type: 'string', format: 'uuid' } },
-          required: ['portfolio_id'],
-        },
+        params: { $ref: 'TransactionCollectionParams' },
         querystring: { $ref: 'ListTransactionsQuerystring' },
         response: { 200: { $ref: 'ListTransactionsResponse' } },
       },
@@ -33,7 +29,7 @@ export const listTransactions: FastifyPluginCallback = (fastify) => {
         pool.query<TransactionRow>({
           name: 'list-transactions',
           text: `SELECT id, data FROM transactions
-                 WHERE data->>'portfolio_id' = $1
+                 WHERE portfolio_id = $1
                    AND ($2::text IS NULL OR COALESCE(data->>'date', data->>'created_at') >= $2)
                    AND ($3::text IS NULL OR COALESCE(data->>'date', data->>'created_at') <= $3)
                  ORDER BY COALESCE(data->>'date', data->>'created_at') DESC
@@ -43,7 +39,7 @@ export const listTransactions: FastifyPluginCallback = (fastify) => {
         pool.query<{ total: string }>({
           name: 'count-transactions',
           text: `SELECT COUNT(*)::text AS total FROM transactions
-                 WHERE data->>'portfolio_id' = $1
+                 WHERE portfolio_id = $1
                    AND ($2::text IS NULL OR COALESCE(data->>'date', data->>'created_at') >= $2)
                    AND ($3::text IS NULL OR COALESCE(data->>'date', data->>'created_at') <= $3)`,
           values: [portfolio_id, date_from ?? null, date_to ?? null],

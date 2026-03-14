@@ -1,6 +1,7 @@
 export interface Transaction {
+  id: string;
   portfolio_id: string;
-  ticker: string;
+  unique_symbol: string;
   side: 'buy' | 'sell';
   amount: number;
   price: number;
@@ -17,6 +18,6 @@ export interface TransactionRow {
   data: Transaction;
 }
 
-export function rowToResponse(row: TransactionRow): Transaction & { id: string } {
-  return { id: row.id, ...row.data };
+export function rowToResponse(row: TransactionRow): Transaction {
+  return { ...row.data, id: row.id };
 }

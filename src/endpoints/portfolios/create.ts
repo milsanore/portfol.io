@@ -29,6 +29,7 @@ export const createPortfolio: FastifyPluginCallback = (fastify) => {
         values: [
           id,
           JSON.stringify({
+            id,
             customer_id,
             name,
             currency,

@@ -25,7 +25,7 @@ export function setup() {
 export default function (data) {
   const res = http.post(
     `${BASE_URL}/portfolios/${data.portfolioId}/transactions`,
-    JSON.stringify({ ticker: 'CBA.ASX', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
+    JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
     { headers: { 'Content-Type': 'application/json' } },
   );
   check(res, { 'create: status is 201': (r) => r.status === 201 });

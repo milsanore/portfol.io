@@ -7,11 +7,7 @@ export const getPortfolio: FastifyPluginCallback = (fastify) => {
     '/portfolios/:id',
     {
       schema: {
-        params: {
-          type: 'object',
-          properties: { id: { type: 'string', format: 'uuid' } },
-          required: ['id'],
-        },
+        params: { $ref: 'PortfolioParams' },
         response: {
           200: { $ref: 'Portfolio' },
           404: { $ref: 'ErrorResponse' },

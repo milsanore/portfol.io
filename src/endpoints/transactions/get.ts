@@ -7,14 +7,7 @@ export const getTransaction: FastifyPluginCallback = (fastify) => {
     '/portfolios/:portfolio_id/transactions/:id',
     {
       schema: {
-        params: {
-          type: 'object',
-          properties: {
-            portfolio_id: { type: 'string', format: 'uuid' },
-            id: { type: 'string', format: 'uuid' },
-          },
-          required: ['portfolio_id', 'id'],
-        },
+        params: { $ref: 'TransactionParams' },
         response: {
           200: { $ref: 'Transaction' },
           404: { $ref: 'ErrorResponse' },

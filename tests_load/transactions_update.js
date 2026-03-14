@@ -24,7 +24,7 @@ export default function () {
 
   const txRes = http.post(
     `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-    JSON.stringify({ ticker: 'CBA.ASX', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
+    JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
     { headers: { 'Content-Type': 'application/json' } },
   );
   const transactionId = txRes.json('id');
@@ -32,12 +32,12 @@ export default function () {
 
   const res = http.patch(
     `${BASE_URL}/portfolios/${portfolioId}/transactions/${transactionId}`,
-    JSON.stringify({ ticker: 'ANZ.ASX', amount: 20 }),
+    JSON.stringify({ unique_symbol: 'ASX:ANZ', amount: 20 }),
     { headers: { 'Content-Type': 'application/json' } },
   );
   check(res, {
     'update: status is 200': (r) => r.status === 200,
-    'update: ticker changed': (r) => r.json('ticker') === 'ANZ.ASX',
+    'update: unique_symbol changed': (r) => r.json('unique_symbol') === 'ASX:ANZ',
     'update: amount changed': (r) => r.json('amount') === 20,
   });
 }

@@ -23,7 +23,7 @@ export function setup() {
 
   const txRes = http.post(
     `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-    JSON.stringify({ ticker: 'CBA.ASX', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
+    JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', amount: 10, price: 100.5, currency: 'AUD' }),
     { headers: { 'Content-Type': 'application/json' } },
   );
 

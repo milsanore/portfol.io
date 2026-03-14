@@ -6,7 +6,7 @@ export const updateTransaction: FastifyPluginCallback = (fastify) => {
   fastify.patch<{
     Params: { portfolio_id: string; id: string };
     Body: {
-      ticker?: string;
+      unique_symbol?: string;
       side?: 'buy' | 'sell';
       amount?: number;
       price?: number;
@@ -19,14 +19,7 @@ export const updateTransaction: FastifyPluginCallback = (fastify) => {
     '/portfolios/:portfolio_id/transactions/:id',
     {
       schema: {
-        params: {
-          type: 'object',
-          properties: {
-            portfolio_id: { type: 'string', format: 'uuid' },
-            id: { type: 'string', format: 'uuid' },
-          },
-          required: ['portfolio_id', 'id'],
-        },
+        params: { $ref: 'TransactionParams' },
         body: { $ref: 'UpdateTransactionRequest' },
         response: {
           200: { $ref: 'Transaction' },
@@ -36,11 +29,11 @@ export const updateTransaction: FastifyPluginCallback = (fastify) => {
     },
     async (request, reply) => {
       const { id } = request.params;
-      const { ticker, side, amount, price, currency, exchange, transaction_id, date } =
+      const { unique_symbol, side, amount, price, currency, exchange, transaction_id, date } =
         request.body;
 
       const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-      if (ticker !== undefined) patch.ticker = ticker;
+      if (unique_symbol !== undefined) patch.unique_symbol = unique_symbol;
       if (side !== undefined) patch.side = side;
       if (amount !== undefined) patch.amount = amount;
       if (price !== undefined) patch.price = price;

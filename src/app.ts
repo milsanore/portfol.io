@@ -11,6 +11,7 @@ import { listTransactions } from './endpoints/transactions/list';
 import { createTransaction } from './endpoints/transactions/create';
 import { getTransaction } from './endpoints/transactions/get';
 import { updateTransaction } from './endpoints/transactions/update';
+import { getPortfolioReturn } from './endpoints/portfolios/return';
 
 export function buildApp(): FastifyInstance {
   const fastify = Fastify({
@@ -37,6 +38,7 @@ export function buildApp(): FastifyInstance {
   fastify.register(createPortfolio);
   fastify.register(getPortfolio);
   fastify.register(updatePortfolio);
+  fastify.register(getPortfolioReturn);
   //
   fastify.register(listTransactions);
   fastify.register(createTransaction);

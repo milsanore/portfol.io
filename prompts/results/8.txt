@@ -1,0 +1,16 @@
+● All 30 tests pass. Here's a summary of everything that was done:
+
+ticker → unique_symbol rename:
+- src/types/transaction.ts
+- src/schemas.json (Transaction, CreateTransactionRequest, UpdateTransactionRequest)
+- src/endpoints/transactions/create.ts
+- src/endpoints/transactions/update.ts
+- src/endpoints/transactions/__tests__/transactions.spec.ts
+
+New endpoint (GET /portfolios/:id/return):
+- src/schemas.json — added PortfolioReturnQuerystring and PortfolioReturn schemas
+- src/endpoints/portfolios/return.ts — SVE algorithm with DB pagination (500 rows/page), realized + unrealized PnL, fallback to avg
+purchase price when no tick data
+- src/app.ts — registered the handler
+- src/endpoints/portfolios/__tests__/portfolios.spec.ts — 5 new test cases covering 404, no transactions, no tick data fallback,
+buy-only return, and buy+sell PnL
