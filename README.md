@@ -114,6 +114,7 @@ BASE_URL=http://my-env:3000 make load
 - the majority of the code in this repo was AI generated, but proof-read
 - the prompts are in the `prompts/` folder, and are hand-written
   - the bulk of the intellectual property is there
+  - unfortunately the resultant back-and-forth with Claude is not captured there
 
 ## DESIGN DECISIONS
 
@@ -126,29 +127,28 @@ BASE_URL=http://my-env:3000 make load
 ### Other
 - not using a base-10 number type yet (e.g. decimal.js), because it doesn't appear warranted. this may change based on requirements
 - calcs are based in USD - the app stores a hard-coded table of forex rates
-- non-unique data in the sample tick data provided
-  - averaging across all rows as a workaround
+- non-unique data in the sample tick data provided - averaging across all rows as a workaround
 
 ## TODO - FUNCTIONAL
 - app does not support shorting stocks
 - missing `customers` collection
 - missing `DELETE` endpoints (does regulation stipulate soft-delete?)
 - unique key on the transactions table
-  - perhaps a composite unique key on portfolio_id + trade_id, but needs careful checking for cross-exchange compatibility
-- uncertain data size, even more pagination may be required in production
-- return is only up-to-date as of last close - it does not account for intraday movement
+  - perhaps a composite unique key on portfolio_id + trade_id
+  - but needs careful checking for cross-exchange compatibility
+- uncertain data size -> even more pagination may be required in production
+- portfolio return is only up-to-date as of last the close - it does not account for intraday price movement
 
 ## FEATURES
-- [integration tests as a second jest suite](tests_integration/jest.config.js)
-  - call out to real database, perform real return calculations
+- [integration tests as a second jest suite](tests_integration/jest.config.js) (call out to a real database, perform real return calculations)
 - load tests (using k6)
 - [statically defined API schema](src/schemas.json)
 - [Makefile as a task runner](Makefile)
-- working github actions that run integration and load tests inline in less than 2 minutes (using docker-in-docker)
+- working github actions that run integration and load tests inline in 2 minutes (using docker-in-docker)
 - [out-of-the-box debugging](.vscode/launch.json)
 - [memory-efficient script for importing sample tick data](deployment/postgres/scripts/import-tick-data.ts)
 - k8s deployment (via helm chart), with file-watch redeployment (`make skaffold`)
-- [git hooks](hooks/commit_check.sh)
+- [git pre-commit hook](hooks/commit_check.sh) for checking formatting, linting, tests
 - database
   - containerised
   - prepared statements (via named queries)
@@ -163,9 +163,9 @@ BASE_URL=http://my-env:3000 make load
 - sonarcloud
 - observability (correlation IDs, otel + a back end)
 - circuit breaking
-- Rate limiting
-- Request size limits
-- CHECK constraint for mandatory JSONB fields
+- rate limiting
+- request size limits
+- DB `CHECK` constraint for mandatory JSONB fields
 - @fastify/response-validation
 - HTTP security headers (helmet)
 - configure the conventional commit regex in the github project
