@@ -66,6 +66,7 @@ jobs:
         run: |
           docker compose -p portfolio up -d --wait
           npm run migrate:up
+          npm run import:tick-data
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio
 
