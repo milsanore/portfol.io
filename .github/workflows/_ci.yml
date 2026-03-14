@@ -63,7 +63,11 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Start services
-        run: docker compose -p portfolio up -d --wait
+        run: |
+          docker compose -p portfolio up -d --wait
+          npm run migrate:up
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/portfolio
 
       - name: Integration tests
         run: npm run test:integration
