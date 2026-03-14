@@ -49,12 +49,13 @@ test:
 ## integration: 🧪+🧪 run integration tests
 .PHONY: integration
 integration:
+	$(call pp,running integration tests. ensure the DB and API are running)
 	npm run test:integration
 
 ## load: 🏎️ run load tests
 .PHONY: load
 load:
-	npm run test:load
+	tests_load/run.sh
 
 ## tidy: 🧹 tidy things up before committing code
 .PHONY: tidy

@@ -5,12 +5,12 @@ CREATE TABLE IF NOT EXISTS tick_data (
   data JSONB NOT NULL
 );
 
--- Composite index: uniqueSymbol first (high cardinality → eliminates most rows on ticker lookup),
--- then pricingDate for efficient range scans within a symbol.
+-- Composite index: unique_symbol first (high cardinality → eliminates most rows on ticker lookup),
+-- then pricing_date for efficient range scans within a symbol.
 -- Trade-off: a date-only range scan (no ticker filter) won't benefit from this index;
--- add a separate index on (data->>'pricingDate') if that query pattern emerges.
+-- add a separate index on (data->>'pricing_date') if that query pattern emerges.
 CREATE INDEX IF NOT EXISTS tick_data_symbol_date_idx
-  ON tick_data ((data->>'uniqueSymbol'), (data->>'pricingDate'));
+  ON tick_data ((data->>'unique_symbol'), (data->>'pricing_date'));
 
 -- Down Migration
 

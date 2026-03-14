@@ -15,7 +15,7 @@
     "format:check": "prettier --check src/",
     "test": "jest",
     "test:integration": "jest --config tests_integration/jest.config.js",
-    "test:load": "k6 run tests_load/hello.js",
+    "test:load": "sh tests_load/run.sh",
     "typecheck": "tsc --noEmit",
     "migrate:up": "node-pg-migrate up --migrations-dir deployment/postgres/migrations",
     "migrate:down": "node-pg-migrate down --migrations-dir deployment/postgres/migrations",
@@ -23,6 +23,8 @@
     "import:tick-data": "ts-node --project tsconfig.scripts.json deployment/postgres/scripts/import-tick-data.ts"
   },
   "dependencies": {
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.5",
     "dotenv": "^16.0.0",
     "fastify": "^5.0.0",
     "node-pg-migrate": "^7.0.0",

@@ -1,6 +1,5 @@
 import http from 'k6/http';
 import { check } from 'k6';
-
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 
 export const options = {
@@ -14,9 +13,10 @@ export const options = {
 };
 
 export default function () {
-  const res = http.get(`${BASE_URL}/hello`);
-  check(res, {
-    'status is 200': (r) => r.status === 200,
-    'message is Hello, World!': (r) => r.json('message') === 'Hello, World!',
-  });
+  const res = http.post(
+    `${BASE_URL}/portfolios`,
+    JSON.stringify({ customer_id: crypto.randomUUID(), name: 'Load Test Portfolio', currency: 'USD' }),
+    { headers: { 'Content-Type': 'application/json' } },
+  );
+  check(res, { 'create: status is 201': (r) => r.status === 201 });
 }

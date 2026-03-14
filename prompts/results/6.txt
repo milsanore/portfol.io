@@ -1,0 +1,18 @@
+
+● 13/13 passing. Here's a summary of everything created:
+
+  Migration
+  - deployment/postgres/migrations/3_create_portfolios.sql — portfolios table with UUID PK, JSONB data, index on customerId
+
+  Source
+  - src/db.ts — shared pg.Pool export
+  - src/types/portfolio.ts — Portfolio, PortfolioData, PortfolioRow types + rowToResponse()
+  - src/endpoints/portfolios/list.ts — GET /portfolios with customer_id filter + pagination
+  - src/endpoints/portfolios/create.ts — POST /portfolios
+  - src/endpoints/portfolios/get.ts — GET /portfolios/:id
+  - src/endpoints/portfolios/update.ts — PATCH /portfolios/:id
+  - src/openapi.json — updated with all portfolio paths and schemas
+  - src/app.ts — registers the 4 portfolio plugins
+
+  Tests
+  - src/__tests__/portfolios.spec.ts — 12 unit tests covering happy paths, 404s, and validation

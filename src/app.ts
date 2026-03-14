@@ -1,30 +1,37 @@
 import Fastify, { FastifyInstance } from 'fastify';
-import schema from './schema.json';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+import schemas from './schemas.json';
+import { hello } from './endpoints/hello';
+import { listPortfolios } from './endpoints/portfolios/list';
+import { createPortfolio } from './endpoints/portfolios/create';
+import { getPortfolio } from './endpoints/portfolios/get';
+import { updatePortfolio } from './endpoints/portfolios/update';
 
 export function buildApp(): FastifyInstance {
   const fastify = Fastify({
     logger: { level: process.env.LOG_LEVEL ?? 'info' },
   });
 
-  fastify.addSchema(schema);
-
-  const isValidateResponses = process.env.ENABLE_RESPONSE_VALIDATION === 'true';
-
-  fastify.get(
-    '/hello',
-    {
-      schema: {
-        response: isValidateResponses
-          ? {
-              200: { $ref: 'portfol-io#/definitions/HelloWorldResponse' },
-            }
-          : undefined,
-      },
+  fastify.register(swagger, {
+    openapi: {
+      info: { title: 'portfol.io API', version: '0.9.0' },
     },
-    () => {
-      return { message: 'Hello, World!' };
-    },
-  );
+  });
+
+  fastify.register(swaggerUi, {
+    routePrefix: '/docs',
+  });
+
+  for (const schema of schemas) {
+    fastify.addSchema(schema);
+  }
+
+  fastify.register(hello);
+  fastify.register(listPortfolios);
+  fastify.register(createPortfolio);
+  fastify.register(getPortfolio);
+  fastify.register(updatePortfolio);
 
   return fastify;
 }

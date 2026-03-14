@@ -23,19 +23,14 @@ const BATCH_SIZE = 1_000;
 type CsvRow = Record<string, string>;
 type JsonRecord = Record<string, string | null>;
 
-/** UPPER_SNAKE_CASE → camelCase */
-function toCamelCase(s: string): string {
-  return s.toLowerCase().replace(/_([a-z0-9])/g, (_, c: string) => c.toUpperCase());
-}
-
 function toJsonRecord(raw: CsvRow): JsonRecord {
   const now = new Date().toISOString();
   const record: JsonRecord = {};
   for (const [key, value] of Object.entries(raw)) {
-    record[toCamelCase(key)] = value === '' ? null : value;
+    record[key.toLowerCase()] = value === '' ? null : value;
   }
-  record.createdAt = now;
-  record.updatedAt = now;
+  record.created_at = now;
+  record.updated_at = now;
   return record;
 }
 

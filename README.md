@@ -15,7 +15,7 @@ PoC of a portfolio-tracking api
 - k6 (load testing)
 
 ## GETTING STARTED
-<img src="docs/make_menu.png" alt="portfolio" width="800" />
+<img src="docs/make.png" alt="portfolio" width="800" />
 
 ## RUNNING THE APP
 
@@ -26,7 +26,10 @@ make init   # first time only
 make run
 ```
 
-The app will be available at `http://localhost:3000`.
+- The app will be available at `http://localhost:3000`
+- Swagger at `http://localhost:3000/docs` (NB: fully driven by `json.schema`)
+
+<img src="docs/swagger.png" alt="portfolio" width="800" />
 
 ### Containerised (Docker Compose)
 
@@ -109,9 +112,9 @@ BASE_URL=http://my-env:3000 make load
 (note the 2-3x performance difference if LOG_LEVEL is set to error)
 
 ## AI
-- the majority of the code is AI generated, but proof-read
+- the majority of the code in this repo was AI generated, but proof-read
 - the prompts are in the `prompts/` folder, and are hand-written
-- the bulk of the intellectual property is there
+  - the bulk of the intellectual property is there
 
 ## DESIGN DECISIONS
 
@@ -126,20 +129,23 @@ BASE_URL=http://my-env:3000 make load
 ### Other
 - not using a base-10 number type (e.g. decimal.js) yet, because it doesn't appear warranted. this may change
 
-## TODO
-- add a Makefile
+## TODO - FUNCTIONAL
+- `customers` collection, etc
+- `DELETE` endpoints
+- unique key on the transactions table
+  - perhaps a composite unique key on portfolio_id + trade_id, but needs careful checking for cross-exchange compatibility
+- Strict validation (AJV) — validates the response object against the schema before serializing, and throws a 500 if it doesn't
+
+## TODO - TECHNICAL
+- is a dependency injection framework necessary?
 - configure sonarcloud
 - configure the conventional commit regex in the github project
 - middleware (e.g. helmet/CORS/authentication/etc)
 - if the build pipeline is slow, create a custom build image and host it in ghcr
   - e.g. the build image for my trader.cpp app: https://github.com/milsanore/trader.cpp/pkgs/container/tradercppbuild
-- semantics
-  - boolean naming convention
-  - snake_case in general
 - observability (correlation IDs, otel + a back end)
 - node file watcher (nodemon)
 - module in package.json / tsconfig
-- add coverage numbers to jest run
 - tsc debug/release builds, source maps
 - disable merging to master without a PR
 - circuit breaking
