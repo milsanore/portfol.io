@@ -1,0 +1,19 @@
+❯ what score would you give this repo?
+
+● 8/10.
+
+What earns it a high score
+
+- The architecture is intentional and well-reasoned — the JSONB design, the escape hatch to NoSQL, avoiding ORMs, all deliberate tradeoffs rather than accidents
+- The tooling setup is genuinely thorough: k8s, skaffold, k6, github actions, coverage gutters, git hooks, docker compose — most repos don't get half of this
+- The test suite is well-structured: unit tests with mocking, integration tests against a real DB, load tests, and pure function tests for the algorithm
+- The schema-first approach with schemas.json driving both validation and OpenAPI docs is clean
+- The code is readable and consistent throughout
+
+What keeps it from higher
+
+- The forex rates are hardcoded — acknowledged with a TODO, but it's a correctness risk in production
+- No authentication — also acknowledged, but it means the API is currently open
+- A few of the TODO items are fairly fundamental for production (rate limiting, request size limits, security headers)
+
+It's a well-crafted portfolio API that clearly reflects considered engineering decisions. The gap to 9-10 is mostly production-hardening rather than fundamental issues.

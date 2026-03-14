@@ -8,7 +8,7 @@ export const updateTransaction: FastifyPluginCallback = (fastify) => {
     Body: {
       unique_symbol?: string;
       side?: 'buy' | 'sell';
-      amount?: number;
+      size?: number;
       price?: number;
       currency?: string;
       exchange?: string;
@@ -29,13 +29,13 @@ export const updateTransaction: FastifyPluginCallback = (fastify) => {
     },
     async (request, reply) => {
       const { id } = request.params;
-      const { unique_symbol, side, amount, price, currency, exchange, transaction_id, date } =
+      const { unique_symbol, side, size, price, currency, exchange, transaction_id, date } =
         request.body;
 
       const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
       if (unique_symbol !== undefined) patch.unique_symbol = unique_symbol;
       if (side !== undefined) patch.side = side;
-      if (amount !== undefined) patch.amount = amount;
+      if (size !== undefined) patch.size = size;
       if (price !== undefined) patch.price = price;
       if (currency !== undefined) patch.currency = currency;
       if (exchange !== undefined) patch.exchange = exchange;

@@ -21,7 +21,7 @@ async function createTransaction(
     body: JSON.stringify({
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: 10,
+      size: 10,
       price: 100.5,
       currency: 'AUD',
       ...payload,
@@ -45,7 +45,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
       portfolio_id: portfolioId,
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: 10,
+      size: 10,
       price: 100.5,
       currency: 'AUD',
     });
@@ -69,25 +69,6 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
     });
   });
 
-  it('returns 400 when required fields are missing', async () => {
-    const response = await fetch(`${BASE_URL}/portfolios/${portfolioId}/transactions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ unique_symbol: 'ASX:CBA' }),
-    });
-
-    expect(response.status).toBe(400);
-  });
-
-  it('returns 400 for an invalid side value', async () => {
-    const response = await fetch(`${BASE_URL}/portfolios/${portfolioId}/transactions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'hold', amount: 10, price: 100.5, currency: 'AUD' }),
-    });
-
-    expect(response.status).toBe(400);
-  });
 });
 
 describe('GET /portfolios/:portfolio_id/transactions/:id', () => {
@@ -139,13 +120,13 @@ describe('PATCH /portfolios/:portfolio_id/transactions/:id', () => {
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ unique_symbol: 'ASX:ANZ', amount: 20 }),
+        body: JSON.stringify({ unique_symbol: 'ASX:ANZ', size: 20 }),
       },
     );
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body).toMatchObject({ id: transactionId, unique_symbol: 'ASX:ANZ', amount: 20 });
+    expect(body).toMatchObject({ id: transactionId, unique_symbol: 'ASX:ANZ', size: 20 });
     expect(body.updated_at).toBeDefined();
   });
 

@@ -24,7 +24,7 @@ export function setup() {
   for (let i = 0; i < 5; i++) {
     http.post(
       `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-      JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', amount: i + 1, price: 100.5, currency: 'AUD' }),
+      JSON.stringify({ unique_symbol: 'ASX:CBA', side: 'buy', size: i + 1, price: 100.5, currency: 'AUD' }),
       { headers: { 'Content-Type': 'application/json' } },
     );
   }

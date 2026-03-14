@@ -3,7 +3,7 @@ export interface Transaction {
   portfolio_id: string;
   unique_symbol: string;
   side: 'buy' | 'sell';
-  amount: number;
+  size: number;
   price: number;
   currency: string;
   exchange?: string;

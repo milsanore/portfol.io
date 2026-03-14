@@ -27,7 +27,18 @@ function toJsonRecord(raw: CsvRow): JsonRecord {
   const now = new Date().toISOString();
   const record: JsonRecord = {};
   for (const [key, value] of Object.entries(raw)) {
-    record[key.toLowerCase()] = value === '' ? null : value;
+    const k = key.toLowerCase();
+    if (k === 'pricing_date') {
+      if (value === '') {
+        record[k] = null;
+      } else {
+        const d = new Date(value);
+        if (isNaN(d.getTime())) throw new Error(`Invalid pricing_date: "${value}"`);
+        record[k] = d.toISOString().slice(0, 10);
+      }
+    } else {
+      record[k] = value === '' ? null : value;
+    }
   }
   record.created_at = now;
   record.updated_at = now;

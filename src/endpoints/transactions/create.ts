@@ -9,7 +9,7 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
     Body: {
       unique_symbol: string;
       side: 'buy' | 'sell';
-      amount: number;
+      size: number;
       price: number;
       currency: string;
       exchange?: string;
@@ -27,7 +27,7 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
     },
     async (request, reply) => {
       const { portfolio_id } = request.params;
-      const { unique_symbol, side, amount, price, currency, exchange, transaction_id, date } =
+      const { unique_symbol, side, size, price, currency, exchange, transaction_id, date } =
         request.body;
       const id = randomUUID();
       const now = new Date().toISOString();
@@ -37,7 +37,7 @@ export const createTransaction: FastifyPluginCallback = (fastify) => {
         portfolio_id,
         unique_symbol,
         side,
-        amount,
+        size,
         price,
         currency,
         created_at: now,

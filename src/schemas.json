@@ -71,7 +71,7 @@
       "portfolio_id": { "type": "string", "format": "uuid" },
       "unique_symbol": { "type": "string" },
       "side": { "type": "string", "enum": ["buy", "sell"] },
-      "amount": { "type": "number" },
+      "size": { "type": "number" },
       "price": { "type": "number" },
       "currency": { "type": "string" },
       "exchange": { "type": "string" },
@@ -85,7 +85,7 @@
       "portfolio_id",
       "unique_symbol",
       "side",
-      "amount",
+      "size",
       "price",
       "currency",
       "created_at",
@@ -121,14 +121,14 @@
     "properties": {
       "unique_symbol": { "type": "string", "minLength": 1 },
       "side": { "type": "string", "enum": ["buy", "sell"] },
-      "amount": { "type": "number", "exclusiveMinimum": 0 },
+      "size": { "type": "number", "exclusiveMinimum": 0 },
       "price": { "type": "number", "exclusiveMinimum": 0 },
       "currency": { "type": "string", "minLength": 1 },
       "exchange": { "type": "string" },
       "transaction_id": { "type": "string" },
       "date": { "type": "string", "format": "date-time" }
     },
-    "required": ["unique_symbol", "side", "amount", "price", "currency"],
+    "required": ["unique_symbol", "side", "size", "price", "currency"],
     "additionalProperties": false
   },
   {
@@ -137,7 +137,7 @@
     "properties": {
       "unique_symbol": { "type": "string", "minLength": 1 },
       "side": { "type": "string", "enum": ["buy", "sell"] },
-      "amount": { "type": "number", "exclusiveMinimum": 0 },
+      "size": { "type": "number", "exclusiveMinimum": 0 },
       "price": { "type": "number", "exclusiveMinimum": 0 },
       "currency": { "type": "string", "minLength": 1 },
       "exchange": { "type": "string" },
@@ -184,8 +184,8 @@
     "$id": "PortfolioReturnQuerystring",
     "type": "object",
     "properties": {
-      "start_date": { "type": "string", "format": "date" },
-      "end_date": { "type": "string", "format": "date" },
+      "start_date": { "type": "string", "format": "date-time" },
+      "end_date": { "type": "string", "format": "date-time" },
       "algorithm": { "type": "string", "enum": ["SVE"], "default": "SVE" }
     }
   },

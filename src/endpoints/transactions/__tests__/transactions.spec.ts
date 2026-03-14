@@ -14,7 +14,7 @@ const transactionData = {
   portfolio_id: portfolioId,
   unique_symbol: 'ASX:CBA',
   side: 'buy',
-  amount: 10,
+  size: 10,
   price: 100.5,
   currency: 'AUD',
   created_at: '2024-01-01T00:00:00.000Z',
@@ -119,7 +119,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
       payload: {
         unique_symbol: 'ASX:CBA',
         side: 'buy',
-        amount: 10,
+        size: 10,
         price: 100.5,
         currency: 'AUD',
       },
@@ -146,7 +146,7 @@ describe('POST /portfolios/:portfolio_id/transactions', () => {
       payload: {
         unique_symbol: 'ASX:CBA',
         side: 'hold',
-        amount: 10,
+        size: 10,
         price: 100.5,
         currency: 'AUD',
       },

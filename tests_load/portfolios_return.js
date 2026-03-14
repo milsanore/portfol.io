@@ -25,12 +25,12 @@ export function setup() {
   for (const unique_symbol of symbols) {
     http.post(
       `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-      JSON.stringify({ unique_symbol, side: 'buy', amount: 100, price: 50, currency: 'AUD' }),
+      JSON.stringify({ unique_symbol, side: 'buy', size: 100, price: 50, currency: 'AUD' }),
       { headers: { 'Content-Type': 'application/json' } },
     );
     http.post(
       `${BASE_URL}/portfolios/${portfolioId}/transactions`,
-      JSON.stringify({ unique_symbol, side: 'sell', amount: 20, price: 55, currency: 'AUD' }),
+      JSON.stringify({ unique_symbol, side: 'sell', size: 20, price: 55, currency: 'AUD' }),
       { headers: { 'Content-Type': 'application/json' } },
     );
   }

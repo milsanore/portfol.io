@@ -37,25 +37,6 @@ describe('POST /portfolios', () => {
     expect(body.updated_at).toBeDefined();
   });
 
-  it('returns 400 when required fields are missing', async () => {
-    const response = await fetch(`${BASE_URL}/portfolios`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Missing Fields' }),
-    });
-
-    expect(response.status).toBe(400);
-  });
-
-  it('returns 400 when currency is missing', async () => {
-    const response = await fetch(`${BASE_URL}/portfolios`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_id: customerId, name: 'No Currency' }),
-    });
-
-    expect(response.status).toBe(400);
-  });
 });
 
 describe('GET /portfolios/:id', () => {

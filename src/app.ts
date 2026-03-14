@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { FastifyError, FastifyInstance } from 'fastify';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import schemas from './schemas.json';
@@ -31,6 +31,15 @@ export function buildApp(): FastifyInstance {
   for (const schema of schemas) {
     fastify.addSchema(schema);
   }
+
+  fastify.setErrorHandler((error: FastifyError, _request, reply) => {
+    if ((error.statusCode ?? 500) < 500) {
+      reply.code(error.statusCode ?? 400).send(error);
+      return;
+    }
+    fastify.log.error(error);
+    reply.code(500).send({ error: 'Internal server error' });
+  });
 
   fastify.register(hello);
   //

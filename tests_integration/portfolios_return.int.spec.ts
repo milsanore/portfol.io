@@ -18,7 +18,7 @@ async function createTransaction(portfolioId: string, payload: Record<string, un
     body: JSON.stringify({
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: 10,
+      size: 10,
       price: 100,
       currency: 'AUD',
       ...payload,
@@ -36,14 +36,14 @@ async function getReturn(portfolioId: string, params: Record<string, string> = {
 const AUD_RATE = 0.63;
 
 // Pinned test date: tick data for this date was verified in the DB on 2026-03-14.
-// end_date resolves to the latest available pricing_date (2025-11-28) for both symbols.
-// AVG(price_close_usd) across the 6 duplicate rows per symbol+date:
-//   ASX:CBA → 99.7126459604061667
-//   ASX:ANZ → 22.6479972203035000
-const PINNED_END_DATE = '2025-12-01';
+// end_date resolves to the latest available pricing_date for both symbols.
+// AVG(price_close_usd) across duplicate rows per symbol+date:
+//   ASX:CBA → 99.2766328761455
+//   ASX:ANZ → 22.390271988684835
+const PINNED_END_DATE = '2025-12-01T00:00:00.000Z';
 const PINNED_TX_DATE = '2025-11-01T00:00:00.000Z';
-const CBA_CLOSE_USD = 99.7126459604061667;
-const ANZ_CLOSE_USD = 22.6479972203035;
+const CBA_CLOSE_USD = 99.2766328761455;
+const ANZ_CLOSE_USD = 22.390271988684835;
 
 describe('GET /portfolios/:id/return', () => {
   it('returns 404 for a non-existent portfolio', async () => {
@@ -76,7 +76,7 @@ describe('GET /portfolios/:id/return', () => {
     const { id } = await createPortfolio();
     await createTransaction(id, {
       unique_symbol: 'ASX:CBA',
-      amount: 10,
+      size: 10,
       price: 100,
       currency: 'AUD',
       date: PINNED_TX_DATE,
@@ -97,8 +97,8 @@ describe('GET /portfolios/:id/return', () => {
     // start_value = 10*100*0.63 + 20*25*0.63 = 630 + 315 = 945
     // end_value   = 10*CBA_CLOSE_USD + 20*ANZ_CLOSE_USD
     const { id } = await createPortfolio();
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', amount: 10, price: 100, currency: 'AUD', date: PINNED_TX_DATE });
-    await createTransaction(id, { unique_symbol: 'ASX:ANZ', amount: 20, price: 25, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', size: 10, price: 100, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:ANZ', size: 20, price: 25, currency: 'AUD', date: PINNED_TX_DATE });
 
     const { status, body } = await getReturn(id, { end_date: PINNED_END_DATE });
     const expectedStart = 10 * 100 * AUD_RATE + 20 * 25 * AUD_RATE;
@@ -116,8 +116,8 @@ describe('GET /portfolios/:id/return', () => {
     // sellProceedsUsd = 50  * 12 * 0.63 = 378
     // netShares = 50 → end_value = 378 + 50 * CBA_CLOSE_USD
     const { id } = await createPortfolio();
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', side: 'buy',  amount: 100, price: 10, currency: 'AUD', date: PINNED_TX_DATE });
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', side: 'sell', amount: 50,  price: 12, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', side: 'buy',  size: 100, price: 10, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', side: 'sell', size: 50,  price: 12, currency: 'AUD', date: PINNED_TX_DATE });
 
     const { status, body } = await getReturn(id, { end_date: PINNED_END_DATE });
     const expectedStart = 100 * 10 * AUD_RATE;
@@ -132,10 +132,10 @@ describe('GET /portfolios/:id/return', () => {
   it('filters transactions by start_date', async () => {
     // Two buys: Oct and Nov. Filter from 2025-11-01 → only the Nov buy counts.
     const { id } = await createPortfolio();
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', amount: 10, price: 100, currency: 'AUD', date: '2025-10-30T00:00:00.000Z' });
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', amount: 10, price: 200, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', size: 10, price: 100, currency: 'AUD', date: '2025-10-30T00:00:00.000Z' });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', size: 10, price: 200, currency: 'AUD', date: PINNED_TX_DATE });
 
-    const { status, body } = await getReturn(id, { start_date: '2025-11-01', end_date: PINNED_END_DATE });
+    const { status, body } = await getReturn(id, { start_date: '2025-11-01T00:00:00.000Z', end_date: PINNED_END_DATE });
     const expectedStart = 10 * 200 * AUD_RATE;
     const expectedEnd   = 10 * CBA_CLOSE_USD;
 
@@ -147,9 +147,9 @@ describe('GET /portfolios/:id/return', () => {
   it('filters transactions by end_date (excludes tick data beyond cutoff)', async () => {
     // Buy with no tick data before cutoff date → falls back to avg buy price → 0% return
     const { id } = await createPortfolio();
-    await createTransaction(id, { unique_symbol: 'ASX:CBA', amount: 10, price: 100, currency: 'AUD', date: PINNED_TX_DATE });
+    await createTransaction(id, { unique_symbol: 'ASX:CBA', size: 10, price: 100, currency: 'AUD', date: PINNED_TX_DATE });
 
-    const { status, body } = await getReturn(id, { end_date: '2025-10-28' });
+    const { status, body } = await getReturn(id, { end_date: '2025-10-28T00:00:00.000Z' });
 
     expect(status).toBe(200);
     // Tick data starts 2025-10-29, so nothing available → fallback to avg buy price → 0%

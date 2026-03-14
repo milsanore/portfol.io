@@ -178,7 +178,7 @@ describe('GET /portfolios/:id/return', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01`,
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z`,
     });
 
     expect(response.statusCode).toBe(404);
@@ -190,7 +190,7 @@ describe('GET /portfolios/:id/return', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z&end_date=2024-12-31T00:00:00.000Z`,
     });
 
     expect(response.statusCode).toBe(200);
@@ -203,12 +203,31 @@ describe('GET /portfolios/:id/return', () => {
     });
   });
 
+  it('returns 400 when a transaction has an unsupported currency', async () => {
+    const txRow = {
+      unique_symbol: 'ASX:CBA',
+      side: 'buy',
+      size: '10',
+      price: '100',
+      currency: 'XYZ',
+    };
+    mockQuery.mockResolvedValueOnce(portfolioExistsRow).mockResolvedValueOnce({ rows: [txRow] });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z&end_date=2024-12-31T00:00:00.000Z`,
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ error: 'Unsupported currency: XYZ' });
+  });
+
   it('returns 0% when no tick data exists (falls back to purchase price)', async () => {
     // 10 shares of ASX:CBA @ 100 each
     const txRow = {
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: '10',
+      size: '10',
       price: '100',
       currency: 'USD',
     };
@@ -219,7 +238,7 @@ describe('GET /portfolios/:id/return', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z&end_date=2024-12-31T00:00:00.000Z`,
     });
 
     expect(response.statusCode).toBe(200);
@@ -234,7 +253,7 @@ describe('GET /portfolios/:id/return', () => {
     const txRow = {
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: '10',
+      size: '10',
       price: '100',
       currency: 'USD',
     };
@@ -246,7 +265,7 @@ describe('GET /portfolios/:id/return', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z&end_date=2024-12-31T00:00:00.000Z`,
     });
 
     expect(response.statusCode).toBe(200);
@@ -262,14 +281,14 @@ describe('GET /portfolios/:id/return', () => {
     const buyRow = {
       unique_symbol: 'ASX:CBA',
       side: 'buy',
-      amount: '100',
+      size: '100',
       price: '10',
       currency: 'USD',
     };
     const sellRow = {
       unique_symbol: 'ASX:CBA',
       side: 'sell',
-      amount: '50',
+      size: '50',
       price: '15',
       currency: 'USD',
     };
@@ -281,7 +300,7 @@ describe('GET /portfolios/:id/return', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01&end_date=2024-12-31`,
+      url: `/portfolios/${portfolioId}/return?start_date=2024-01-01T00:00:00.000Z&end_date=2024-12-31T00:00:00.000Z`,
     });
 
     expect(response.statusCode).toBe(200);
