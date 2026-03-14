@@ -180,7 +180,7 @@ describe('GET /portfolios', () => {
   });
 
   it('supports pagination', async () => {
-    const response = await fetch(`${BASE_URL}/portfolios?page=1&page_size=2`);
+    const response = await fetch(`${BASE_URL}/portfolios?customer_id=${customerId}&page=1&page_size=2`);
 
     expect(response.status).toBe(200);
     const body = await response.json();
@@ -190,13 +190,13 @@ describe('GET /portfolios', () => {
   });
 
   it('returns second page of results', async () => {
-    const page1 = await fetch(`${BASE_URL}/portfolios?page=1&page_size=2`).then((r) => r.json());
-    const page2 = await fetch(`${BASE_URL}/portfolios?page=2&page_size=2`).then((r) => r.json());
+    const [page1, page2] = await Promise.all([
+      fetch(`${BASE_URL}/portfolios?customer_id=${customerId}&page=1&page_size=2`).then((r) => r.json()),
+      fetch(`${BASE_URL}/portfolios?customer_id=${customerId}&page=2&page_size=2`).then((r) => r.json()),
+    ]);
 
     const page1Ids = page1.data.map((p: { id: string }) => p.id);
     const page2Ids = page2.data.map((p: { id: string }) => p.id);
-    const overlap = page1Ids.filter((id: string) => page2Ids.includes(id));
-
-    expect(overlap).toHaveLength(0);
+    expect(page1Ids.filter((id: string) => page2Ids.includes(id))).toHaveLength(0);
   });
 });

@@ -1,0 +1,22 @@
+● 24/24 tests passing. Here's a summary of everything created:
+
+  Migration (4_create_transactions_portfolio_index.sql)
+  - Composite index on (portfolio_id, COALESCE(date, created_at)) to efficiently support date-range filtering and ordering
+
+  Type (src/types/transaction.ts)
+  - Transaction interface, TransactionRow, and rowToResponse() helper
+
+  Schemas (added to schemas.json)
+  - Transaction, ListTransactionsQuerystring, ListTransactionsResponse, CreateTransactionRequest, UpdateTransactionRequest
+
+  Endpoints (src/endpoints/transactions/)
+  - list.ts — GET /portfolios/:portfolio_id/transactions with pagination + date_from/date_to filters; uses COALESCE(date, created_at)
+   so optional dates fall back gracefully
+  - create.ts — POST /portfolios/:portfolio_id/transactions; optional fields (exchange, transaction_id, date) are omitted from JSONB
+  if not provided
+  - get.ts — GET /portfolios/:portfolio_id/transactions/:id; scopes query to the portfolio to prevent cross-portfolio leakage
+  - update.ts — PATCH /portfolios/:portfolio_id/transactions/:id; all business fields are mutable via JSONB merge
+
+  Tests (__tests__/transactions.spec.ts) — 11 unit tests covering all endpoints, pagination, date filtering, validation errors, and
+  404s
+  

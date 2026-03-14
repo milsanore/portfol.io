@@ -95,21 +95,20 @@ Target URL defaults to `http://localhost:3000`. Override with the `BASE_URL` env
 
 ### Load Tests
 
-Requires the app to be running and [k6](https://k6.io) installed.
+Requires the app to be running (incl. the DB) and [k6](https://k6.io) to be installed.
 
 ```bash
-make compose        # start app + postgres
 make load
 ```
 
-Runs 20 virtual users for 30 seconds (1s ramp-up + 29s sustained). Exits non-zero if any checks fail.
+<img src="docs/k6.png" alt="portfolio" width="800" />
 
 Target URL defaults to `http://localhost:3000`. Override with `BASE_URL`:
 
 ```bash
 BASE_URL=http://my-env:3000 make load
 ```
-(note the 2-3x performance difference if LOG_LEVEL is set to error)
+(note the significant performance difference if LOG_LEVEL is set to error)
 
 ## AI
 - the majority of the code in this repo was AI generated, but proof-read

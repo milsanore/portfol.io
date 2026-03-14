@@ -5,7 +5,5 @@ module.exports = {
   testMatch: ['**/src/**/__tests__/**/*.spec.ts'],
   collectCoverageFrom: ['src/**/*.ts', '!src/**/__tests__/**'],
   coverageReporters: ['text', 'lcov'],
-  testEnvironmentOptions: {
-    env: { LOG_LEVEL: 'silent' },
-  },
+  setupFiles: ['<rootDir>/jest.setup.js'],
 };

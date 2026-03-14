@@ -64,6 +64,89 @@
     "additionalProperties": false
   },
   {
+    "$id": "Transaction",
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "format": "uuid" },
+      "portfolio_id": { "type": "string", "format": "uuid" },
+      "ticker": { "type": "string" },
+      "side": { "type": "string", "enum": ["buy", "sell"] },
+      "amount": { "type": "number" },
+      "price": { "type": "number" },
+      "currency": { "type": "string" },
+      "exchange": { "type": "string" },
+      "transaction_id": { "type": "string" },
+      "date": { "type": "string", "format": "date-time" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "updated_at": { "type": "string", "format": "date-time" }
+    },
+    "required": [
+      "id",
+      "portfolio_id",
+      "ticker",
+      "side",
+      "amount",
+      "price",
+      "currency",
+      "created_at",
+      "updated_at"
+    ],
+    "additionalProperties": false
+  },
+  {
+    "$id": "ListTransactionsQuerystring",
+    "type": "object",
+    "properties": {
+      "date_from": { "type": "string", "format": "date-time" },
+      "date_to": { "type": "string", "format": "date-time" },
+      "page": { "type": "integer", "minimum": 1, "default": 1 },
+      "page_size": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+    }
+  },
+  {
+    "$id": "ListTransactionsResponse",
+    "type": "object",
+    "properties": {
+      "data": { "type": "array", "items": { "$ref": "Transaction" } },
+      "total": { "type": "integer" },
+      "page": { "type": "integer" },
+      "page_size": { "type": "integer" }
+    },
+    "required": ["data", "total", "page", "page_size"],
+    "additionalProperties": false
+  },
+  {
+    "$id": "CreateTransactionRequest",
+    "type": "object",
+    "properties": {
+      "ticker": { "type": "string", "minLength": 1 },
+      "side": { "type": "string", "enum": ["buy", "sell"] },
+      "amount": { "type": "number", "exclusiveMinimum": 0 },
+      "price": { "type": "number", "exclusiveMinimum": 0 },
+      "currency": { "type": "string", "minLength": 1 },
+      "exchange": { "type": "string" },
+      "transaction_id": { "type": "string" },
+      "date": { "type": "string", "format": "date-time" }
+    },
+    "required": ["ticker", "side", "amount", "price", "currency"],
+    "additionalProperties": false
+  },
+  {
+    "$id": "UpdateTransactionRequest",
+    "type": "object",
+    "properties": {
+      "ticker": { "type": "string", "minLength": 1 },
+      "side": { "type": "string", "enum": ["buy", "sell"] },
+      "amount": { "type": "number", "exclusiveMinimum": 0 },
+      "price": { "type": "number", "exclusiveMinimum": 0 },
+      "currency": { "type": "string", "minLength": 1 },
+      "exchange": { "type": "string" },
+      "transaction_id": { "type": "string" },
+      "date": { "type": "string", "format": "date-time" }
+    },
+    "additionalProperties": false
+  },
+  {
     "$id": "ErrorResponse",
     "type": "object",
     "properties": {
