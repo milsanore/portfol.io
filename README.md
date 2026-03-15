@@ -124,15 +124,28 @@ BASE_URL=http://my-env:3000 make load
 ### Libraries
 - i'm moving from express to fastify to see what performance is like
 
+### Database
+- uuids for primary keys - allows for easy scaling / sharding / migrating to nosql
+- using postgres with nosql
+  - advantages: no ORMs needed (this is a big one for me because many engineers struggle with ORMs), easy migration to nosql, but retain ACID/TRANASCTIONs
+  - disadvantages: weaker typing at the DB level, weaker FK constrains
+
 ### Other
 - not using a base-10 number type yet (e.g. decimal.js), because it doesn't appear warranted. this may change based on requirements
 - calcs are based in USD - the app stores a hard-coded table of forex rates
 - non-unique data in the sample tick data provided - averaging across all rows as a workaround
 
 ## TODO - FUNCTIONAL
+- currency
+  - is standardised to USD
+  - instead, it should follow the customer's portfolio currency
+  - exchange rates are currently hard-coded
 - app does not support shorting stocks
 - missing `customers` collection
 - missing `DELETE` endpoints (does regulation stipulate soft-delete?)
+- unique key on the portfolios table
+  - users can currently create two portfolios with the same name
+  - depends on business requirements
 - unique key on the transactions table
   - perhaps a composite unique key on portfolio_id + trade_id
   - but needs careful checking for cross-exchange compatibility
