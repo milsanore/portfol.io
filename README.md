@@ -123,6 +123,7 @@ BASE_URL=http://my-env:3000 make load
 
 ### Libraries
 - i'm moving from express to fastify to see what performance is like
+- it also has a tight integration with static api schemas
 
 ### Database
 - uuids for primary keys - allows for easy scaling / sharding / migrating to nosql
